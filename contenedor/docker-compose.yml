@@ -3,7 +3,7 @@ services:
     my-mysql:
         image: mysql:8.0.1
         deploy: 
-            replicas: 3
+            replicas: 2
         networks:
             - conexion-network
         environment:
@@ -17,7 +17,7 @@ services:
     mybackend-x:
         image: criszhirzhan/backend
         deploy: 
-            replicas: 3
+            replicas: 2
         ports:
             - "9090:9090"
         environment:
@@ -35,7 +35,7 @@ services:
     myfrontend-x-2:
         image: criszhirzhan/frontend
         deploy: 
-            replicas: 3
+            replicas: 2
         ports:
             - "5555:80"
         environment:
