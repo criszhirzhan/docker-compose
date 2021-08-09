@@ -19,7 +19,7 @@ services:
         deploy: 
             replicas: 2
         ports:
-            - "9090:9090"
+            - "8090:8090"
         environment:
             SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/clientes?useSSL=false
             SPRING_DATASOURCE_USERNAME: "admin"
