@@ -1,44 +1,54 @@
-version: "3.8"  # optional since v1.27.0
+version: "3.9"  # optional since v1.27.0
 services:
     my-mysql:
         image: mysql:8.0.1
         deploy: 
             replicas: 3
         networks:
-            - conexion 
+            - conexion-network
         environment:
-            MYSQL_USER: root
-            MYSQL_DATABASE: testdb
+            MYSQL_USER: admin
+            MYSQL_DATABASE: clientes
             MYSQL_PASSWORD: admin
             MYSQL_ROOT_PASSWORD: admin
         ports:
             - '3306:3306'
-    my-crud-x:
-        image: criszhirzhan/frontend
-        deploy: 
-            replicas: 2
-        ports:
-            - "4200:4200"
-        depends_on:
-            - my-mysql
-        networks:
-            - conexion
-        hostname: frontend
-        
-    my-crud-x-2:
+                 
+    mybackend-x:
         image: criszhirzhan/backend
         deploy: 
-            replicas: 2
-        environment:
-            SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/testdb?useSSL=false
-            SPRING_DATASOURCE_USERNAME: "root"
-            SPRING_DATASOURCE_PASSWORD: "admin"   
+            replicas: 3
         ports:
-            - "8090:8090"
+            - "9090:9090"
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/clientes?useSSL=false
+            SPRING_DATASOURCE_USERNAME: "admin"
+            SPRING_DATASOURCE_PASSWORD: "admin"
         depends_on:
             - my-mysql
+        links:
+            - my-mysql
         networks:
-            - conexion
+            - conexion-network 
         hostname: backend
-networks:
-    conexion:
+    
+    myfrontend-x-2:
+        image: criszhirzhan/frontend
+        deploy: 
+            replicas: 3
+        ports:
+            - "5555:80"
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/clientes?useSSL=false
+            SPRING_DATASOURCE_USERNAME: "admin"
+            SPRING_DATASOURCE_PASSWORD: "admin"
+        depends_on:
+            - my-mysql
+        links:
+            - my-mysql
+        networks: 
+            - conexion-network
+        hostname: frontend
+
+networks: 
+    conexion-network:
