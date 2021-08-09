@@ -1,0 +1,44 @@
+version: "3.8"  # optional since v1.27.0
+services:
+    my-mysql:
+        image: mysql:8.0.1
+        deploy: 
+            replicas: 3
+        networks:
+            - conexion 
+        environment:
+            MYSQL_USER: root
+            MYSQL_DATABASE: testdb
+            MYSQL_PASSWORD: admin
+            MYSQL_ROOT_PASSWORD: admin
+        ports:
+            - '3306:3306'
+    my-crud-x:
+        image: criszhirzhan/frontend
+        deploy: 
+            replicas: 2
+        ports:
+            - "4200:4200"
+        depends_on:
+            - my-mysql
+        networks:
+            - conexion
+        hostname: frontend
+        
+    my-crud-x-2:
+        image: criszhirzhan/backend
+        deploy: 
+            replicas: 2
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/testdb?useSSL=false
+            SPRING_DATASOURCE_USERNAME: "root"
+            SPRING_DATASOURCE_PASSWORD: "admin"   
+        ports:
+            - "8090:8090"
+        depends_on:
+            - my-mysql
+        networks:
+            - conexion
+        hostname: backend
+networks:
+    conexion:
